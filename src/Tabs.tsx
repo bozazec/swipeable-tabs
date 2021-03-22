@@ -69,6 +69,11 @@ const TabGroup: React.FC<TabGroupProps> = ({
   //     throw error;
   //   }
   // }, [children]);
+
+  // Create children map depending on value type so it can be used later
+
+  const isValueNumber = typeof value === 'number'
+  const childrenMap = isValueNumber ? children.map(child => child.props.index) : children.map(child => child.props.label)
   return (
     <TabGroupContainer styleProps={styleProps}>
       <TabsNavbar styleProps={styleProps} tabBarCSS={tabBarCSS}>
@@ -79,7 +84,7 @@ const TabGroup: React.FC<TabGroupProps> = ({
               onClick={handleTabClick(child.props.label, child.key || index)}
               width={100 / children.length}
               label={child.props.label}
-              isSelected={value === child.props.label}
+              isSelected={isValueNumber ? value === child.props.index : value === child.props.label}
               key={child.props.label}
               styleProps={styleProps}
               tabItemCSS={tabItemCSS}
@@ -87,7 +92,7 @@ const TabGroup: React.FC<TabGroupProps> = ({
           ))}
         </TabsList>
         <TabInkBar
-          selectedTab={children.map(child => child.props.label).indexOf(value)}
+          selectedTab={childrenMap.indexOf(value)}
           tabCount={children.length}
           ref={inkBarRef}
           styleProps={styleProps}
@@ -97,7 +102,7 @@ const TabGroup: React.FC<TabGroupProps> = ({
         <SwipeableViews
           views={children}
           onSwipe={handleSwipe}
-          selectedView={children.map(child => child.props.label).indexOf(value)}
+          selectedView={childrenMap.indexOf(value)}
           inkBarRef={inkBarRef}
           blacklistedElement={blacklistedElement}
           // selectedTabName={value}
